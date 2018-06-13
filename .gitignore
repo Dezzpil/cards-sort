@@ -1,2 +1,5 @@
 /vendor/
 /.idea/
+/xhprof/
+server.log
+nohup.out
