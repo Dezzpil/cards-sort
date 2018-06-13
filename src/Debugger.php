@@ -14,6 +14,7 @@ class Debugger
     protected $time;
     protected $memory;
     protected $verbose;
+    protected $ps;
 
     public function __construct($verbose = true)
     {
@@ -23,6 +24,10 @@ class Debugger
         if ($verbose) {
             echo "\nDebug enabled:\n";
         }
+
+        $pid = getmypid();
+        exec("ps --pid $pid --no-headers -o rss", $output);
+        $this->ps = $output[0];
     }
 
     public function time($raw = false)
@@ -43,6 +48,17 @@ class Debugger
         $usage = round(($now - $this->memory) / 1024, 3);
         $this->memory = $now;
         echo $usage . " kb\n";
+    }
+
+    /**
+     * @return string in kb
+     */
+    public function memoryFromPs()
+    {
+        $pid = getmypid();
+        exec("ps --pid $pid --no-headers -o rss", $output);
+        return $output[0] - $this->ps;
+
     }
 
     public function __destruct()

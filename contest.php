@@ -15,8 +15,8 @@ $cards = $generator->create(10000);
 $debugger = new \Src\Debugger();
 $traveler = new \Contest\TravelerDezzpil();
 $result = $traveler($cards);
+echo $debugger->memoryFromPs() . " kb \n";
 $debugger->time();
-$debugger->memory();
 unset($debugger);
 
 echo "---------------------------------------\n";
@@ -25,14 +25,15 @@ $cards = $generator->create(10000, 'Lenni');
 
 $debugger = new \Src\Debugger();
 \Contest\TravelerLenni::makeTravel($cards,1);
+echo $debugger->memoryFromPs() . " kb \n";
 $debugger->time();
-$debugger->memory();
+
 unset($debugger);
 
 $debugger = new \Src\Debugger();
 \Contest\TravelerLenni::makeTravel($cards,2);
+echo $debugger->memoryFromPs() . " kb \n";
 $debugger->time();
-$debugger->memory();
 unset($debugger);
 
 echo "---------------------------------------\n";
@@ -44,7 +45,9 @@ $cards = $generator->create(10000, 'Shendor');
 $debugger = new \Src\Debugger();
 $traveler = new \Contest\TravelerShendor();
 $traveler->cardSort($cards);
+echo $debugger->memoryFromPs() . " kb \n";
 $debugger->time();
-$debugger->memory();
+
+
 unset($debugger);
 
