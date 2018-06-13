@@ -1,0 +1,22 @@
+{
+    "name": "norlov/cards-sort",
+    "description": "Сортировщик карточек путешественника",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nikita Orlov",
+            "email": "norlov@gtrf.ru"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Src\\": "src",
+            "Contest\\": "contest"
+        }
+    },
+    "require": {},
+    "require-dev": {
+        "phpunit/phpunit": "^7.2"
+    }
+}
