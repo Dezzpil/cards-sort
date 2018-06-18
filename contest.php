@@ -19,6 +19,13 @@ echo $debugger->memoryFromPs() . " kb \n";
 $debugger->time();
 unset($debugger);
 
+$debugger = new \Src\Debugger();
+$traveler = new \Contest\TravelerDezzpilOpt();
+$result = $traveler->buildMap($cards);
+echo $debugger->memoryFromPs() . " kb \n";
+$debugger->time();
+unset($debugger);
+
 echo "---------------------------------------\n";
 $generator = new \Src\Generator();
 $cards = $generator->create(10000, 'Lenni');

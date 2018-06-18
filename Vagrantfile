@@ -27,13 +27,13 @@ Vagrant.configure("2") do |config|
     apt-get install -y graphviz
 
     cd /vagrant
-    mkdir -p web/xhprof
-
     git clone https://github.com/longxinH/xhprof.git ./xhprof
     cd xhprof/extension/
     phpize
     ./configure --with-php-config=/usr/bin/php-config
     make && sudo make install
+
+    cd /vagrant
 
     mv /etc/php/7.1/cli/php.ini /etc/php/7.1/cli/php.ini.bak
     cp /vagrant/php.ini /etc/php/7.1/cli/php.ini
@@ -45,7 +45,7 @@ Vagrant.configure("2") do |config|
     php composer-setup.php --install-dir=/usr/bin --filename=composer
     php -r "unlink('composer-setup.php');"
 
-    composer install
+    php /usr/bin/composer install
 
     touch server.log
     php -S 0.0.0.0:3000 -t xhprof/xhprof_html 2>&1 >> server.log &

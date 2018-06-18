@@ -57,4 +57,12 @@ class Transport //implements ArrayAccess
     {
         return [$this->getType(), $this->getFrom(), $this->getTo(), str_replace(';', '. ', $this->data)];
     }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return "Take {$this->type} from {$this->from} to {$this->to}. ";// . str_replace(';', '. ', $this->data);
+    }
 }

@@ -10,106 +10,133 @@ namespace Src;
 
 class Traveler
 {
-    protected $pointsFrom = [];
-    protected $pointsTo = [];
-
-    protected $items = [];
-    protected $index = 0;
+//    protected $pointsFrom = [];
+//    protected $pointsTo = [];
+//
+//    protected $items = [];
+    //protected $index = 0;
 
 
     /**
      * @param array $cards
      * @return \Generator
      */
-    protected function iterate(array $cards)
-    {
-        while (array_key_exists($this->index, $cards)) {
-            yield $cards[$this->index++];
-        }
-    }
+//    protected function iterate(array $cards)
+//    {
+//        while (array_key_exists($this->index, $cards)) {
+//            yield $cards[$this->index++];
+//        }
+//    }
 
     /**
      * @param array $cards
      * @return array
      */
-    public function buildMap(array $cards): array
+    public function buildMap(array $items): array
     {
         $result = [];
-        $this->index = 0;
+        //$this->index = 0;
 
-        foreach ($this->iterate($cards) as $card) {
-            $index = $this->index - 1;
+        $pointsFrom = [];
+        $pointsTo = [];
+        //$items = [];
 
-            $this->items[$index] = $card;
-            $this->pointsTo[$card['to']] = $index;
-            $this->pointsFrom[$card['from']] = $index;
+//        foreach ($this->iterate($cards) as $card) {
+//            $index = $this->index - 1;
+//
+//            $items[$index] = $card;
+//            $pointsTo[$card['to']] = $index;
+//            $pointsFrom[$card['from']] = $index;
+//        }
 
+        //$items = $cards;
+        foreach ($items as $index => $card) {
+            //$index = $this->index - 1;
 
+            //$items[$index] = $card;
+            $pointsTo[$card['to']] = $index;
+            $pointsFrom[$card['from']] = $index;
         }
 
-        $unicPoints = [];
-        foreach ($this->pointsFrom as $from => $index) {
-            if (!array_key_exists($from, $this->pointsTo)) {
-                $unicPoints[] = $from;
-            }
-        }
-
-        if (count($unicPoints) > 1) {
-            throw new \RangeException('Указано несколько начальных пунктов');
-        }
-
-        $startFrom = $unicPoints[0];
-        unset($this->pointsTo); // no need anymore
-
-        $factory = new CardFactory();
-
-        // add first manually
-        $transport = $this->getTransport($startFrom, $factory);
-        $result[] = vsprintf(
-            "Take %s from %s to %s. %s", $transport->getValuesForTemplate()
-        );
-
-        while (true) {
-            $to = $transport->getTo();
-            if (!array_key_exists($to, $this->pointsFrom)) {
-                // конечный пункт (из него больше никуда не едем)
+        $startFrom = null;
+        foreach ($pointsFrom as $from => $index) {
+            if (!array_key_exists($from, $pointsTo)) {
+                $startFrom = $from;
                 break;
             }
+        }
 
-            $transport = $this->getTransport($to, $factory);
-            $result[] = vsprintf(
-                "Take %s from %s to %s. %s", $transport->getValuesForTemplate()
-            );
+//        if (count($unicPoints) > 1) {
+//            throw new \RangeException('Указано несколько начальных пунктов');
+//        }
+        if ($startFrom === null) {
+            throw new \RangeException();
+        }
+
+//        $startFrom = $unicPoints[0];
+        unset($pointsTo); // no need anymore
+
+//        $factory = new CardFactory();
+//
+//        // add first manually
+//        $transport = $this->getTransport($startFrom, $factory);
+//        while (true) {
+//            $result[] = $transport->getDescription();
+//            $to = $transport->getTo();
+//            if (!array_key_exists($to, $this->pointsFrom)) {
+//                // конечный пункт (из него больше никуда не едем)
+//                break;
+//            }
+//
+//            $transport = $this->getTransport($to, $factory);
+//        }
+
+        $point = $startFrom;
+        while (true) {
+            $index = $pointsFrom[$point];
+            $card = $items[$index];
+
+            $result[] = "Take {$card['type']} from {$card['from']} to {$card['to']}. ";
+            unset($pointsFrom[$point]);
+            unset($items[$index]);
+
+            // берем следующий пункт назначения
+            $point = $card['to'];
+            if (!array_key_exists($point, $pointsFrom)) {
+                // конечный пункт (из него больше никуда не едем)
+                unset($pointsFrom);
+                break;
+            }
         }
 
         return $result;
     }
 
-    /**
-     * @param $point
-     * @param CardFactory $factory
-     * @return Transport
-     */
-    protected function getTransport($point, CardFactory $factory): Transport
-    {
-        $index = $this->pointsFrom[$point];
-        $card = $this->items[$index];
-        $transport = $factory->forgeFromArray($card);
+//    /**
+//     * @param $point
+//     * @param CardFactory $factory
+//     * @return Transport
+//     */
+//    protected function getTransport($point, CardFactory $factory): Transport
+//    {
+//        $index = $this->pointsFrom[$point];
+//        $card = $this->items[$index];
+//        $transport = $factory->forgeFromArray($card);
+//
+//        unset($this->pointsFrom[$point]);
+//        unset($this->items[$index]);
+//
+//        return $transport;
+//    }
 
-        unset($this->pointsFrom[$point]);
-        unset($this->items[$index]);
-
-        return $transport;
-    }
-
-    /**
-     * @param array $cards
-     * @return array
-     */
-    public function __invoke(array $cards)
-    {
-        $result = $this->buildMap($cards);
-        return $result;
-    }
+//    /**
+//     * @param array $cards
+//     * @return array
+//     */
+//    public function __invoke(array $cards)
+//    {
+//        $result = $this->buildMap($cards);
+//        return $result;
+//    }
 
 }
